@@ -1,0 +1,162 @@
+<!-- © codedroider. 2026 -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<head>
+  <title>Любимый мой| Обожаю тебя</title>
+</head>
+<style>
+  /* page customization */
+  body { 
+    background: #0a0a0a; 
+    color: #ff4d6d; 
+    font-family: 'Courier New', monospace; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    height: 100vh; 
+    margin: 0; 
+    overflow: hidden; 
+  }
+    h1 { 
+    font-size: 2.5rem; 
+    z-index: 10; 
+    text-shadow: 0 0 20px rgba(255, 77, 109, 0.8); 
+    pointer-events: none;
+    text-align: center;
+  }
+
+  .heart { 
+    position: absolute; 
+    bottom: -50px; 
+    user-select: none; 
+    z-index: 1;
+    animation: mainFly linear infinite;
+  }
+
+  /* Переход на love.html сердечками */
+  #heart-transition {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    overflow: hidden;
+    pointer-events: none;
+    opacity: 0;
+    background: radial-gradient(circle at center, rgba(255, 77, 109, 0.12), rgba(10, 0, 8, 0.96));
+    transition: opacity 220ms ease;
+  }
+
+  #heart-transition.active { opacity: 1; }
+
+  .transition-heart {
+    position: absolute;
+    left: var(--x);
+    top: var(--y);
+    color: #ff4d6d;
+    font-size: var(--size);
+    line-height: 1;
+    text-shadow: 0 0 12px rgba(255, 77, 109, .9), 0 0 28px rgba(255, 77, 109, .65);
+    transform: translate(-50%, -50%) scale(.15) rotate(0deg);
+    opacity: 0;
+    animation: heartCover 950ms cubic-bezier(.2,.75,.25,1) forwards;
+    animation-delay: var(--delay);
+  }
+
+  @keyframes heartCover {
+    0% { transform: translate(-50%, -50%) scale(.15) rotate(-20deg); opacity: 0; }
+    18% { opacity: 1; }
+    100% { transform: translate(-50%, -50%) scale(var(--scale)) rotate(var(--rotation)); opacity: 1; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .transition-heart { animation-duration: 450ms; }
+  }
+
+  @keyframes mainFly {
+    0% { 
+      transform: translateY(0) rotate(0deg) translateX(0); 
+      opacity: 0; 
+    }
+    10% { opacity: 0.5; }
+    25% { transform: translateY(-25vh) rotate(15deg) translateX(20px); } /* плавный крен вправо */
+    50% { transform: translateY(-50vh) rotate(0deg) translateX(0); }
+    75% { transform: translateY(-75vh) rotate(-15deg) translateX(-20px); } /* крен влево */
+    90% { opacity: 0.5; }
+    100% { 
+      transform: translateY(-115vh) rotate(0deg) translateX(0); 
+      opacity: 0; 
+    }
+  }
+</style>
+
+<!-- ur text -->
+<h1>i like u <3</h1>
+
+<script>
+  // script :D
+  const count = 40;
+  for (let i = 0; i < count; i++) {
+    const h = document.createElement('div');
+    h.className = 'heart';
+    h.innerHTML = '♥';
+    
+    const size = Math.random() * 25 + 10;
+    h.style.fontSize = size + 'px';
+    h.style.left = Math.random() * 100 + 'vw';
+    
+    // delay
+    const duration = Math.random() * 5 + 5; 
+    h.style.animationDuration = duration + 's';
+    h.style.animationDelay = (Math.random() * -10) + 's';
+    
+    if (size < 15) h.style.opacity = '0.3';
+
+    document.body.appendChild(h);
+  }
+</script>
+
+
+<script>
+  // При первом клике закрываем экран сердечками и открываем love.html.
+  (() => {
+    let isTransitioning = false;
+
+    document.addEventListener('click', (event) => {
+      if (isTransitioning) return;
+      isTransitioning = true;
+
+      const overlay = document.createElement('div');
+      overlay.id = 'heart-transition';
+      document.body.appendChild(overlay);
+
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      const centerX = event.clientX || width / 2;
+      const centerY = event.clientY || height / 2;
+      const total = Math.min(90, Math.max(48, Math.round((width * height) / 12000)));
+
+      for (let i = 0; i < total; i++) {
+        const heart = document.createElement('span');
+        heart.className = 'transition-heart';
+        heart.textContent = '♥';
+
+        // Сердечки заполняют весь экран, начиная от точки нажатия.
+        const angle = Math.random() * Math.PI * 2;
+        const radius = Math.random() * Math.max(width, height) * 0.72;
+        const x = Math.max(-5, Math.min(width + 5, centerX + Math.cos(angle) * radius));
+        const y = Math.max(-5, Math.min(height + 5, centerY + Math.sin(angle) * radius));
+        heart.style.setProperty('--x', `${x}px`);
+        heart.style.setProperty('--y', `${y}px`);
+        heart.style.setProperty('--size', `${30 + Math.random() * 75}px`);
+        heart.style.setProperty('--scale', `${2.2 + Math.random() * 2.8}`);
+        heart.style.setProperty('--rotation', `${Math.random() * 70 - 35}deg`);
+        heart.style.setProperty('--delay', `${Math.random() * 180}ms`);
+        overlay.appendChild(heart);
+      }
+
+      requestAnimationFrame(() => overlay.classList.add('active'));
+      window.setTimeout(() => {
+        window.location.href = 'love.html';
+      }, 1050);
+    }, { once: false });
+  })();
+</script>
